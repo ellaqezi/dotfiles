@@ -1,0 +1,15 @@
+- hosts: all
+  vars:
+    home_dir: /Users/ibalce 
+    dotfiles_dir: /Users/ibalce/Documents/projects/dotfiles
+  tasks:
+  - name: Creates directory
+    file: path=/etc/ansible state=directory
+  - name: Symlink config files
+    file:
+      src: '{{dotfiles_dir}}/home/{{ item.src }}'
+      dest: '{{home_dir}}/{{ item.dest }}'
+      state: link
+    with_items:
+      - { src: '.gitconfig', dest: '.gitconfig' }
+      - { src: '.bashrc', dest: '.bash_profile' }

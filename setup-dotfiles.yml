@@ -1,7 +1,7 @@
 - hosts: localhost 
   vars:
-    home_dir: /Users/ibalce 
-    dotfiles_dir: /Users/ibalce/Documents/projects/dotfiles
+    home_dir: "{{ ansible_env.HOME }}" 
+    dotfiles_dir: "{{ playbook_dir }}" 
   tasks:
   - name: Create ansible directory
     file: path=/etc/ansible state=directory

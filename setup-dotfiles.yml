@@ -1,15 +1,18 @@
 - hosts: localhost 
   vars:
     home_dir: "{{ ansible_env.HOME }}" 
-    dotfiles_dir: "{{ playbook_dir }}" 
+    dotfiles_dir: "{{ playbook_dir }}"
+    modules_dir: '/etc/ansible/modules'
   tasks:
   - name: Create ansible directory
-    file: path=/etc/ansible state=directory
+    file: path={{ modules_dir }} state=directory
+    become: true
   - name: Symlink ansible hosts
     file: 
       src: '{{ dotfiles_dir }}/ansible/hosts'
       dest: '/etc/ansible/hosts' 
       state: link
+    become: true
   - name: Symlink config files
     file:
       src: '{{ item.src }}'
@@ -17,3 +20,24 @@
       state: link
     with_filetree:
       - '{{ dotfiles_dir }}/home/'
+  - name: Install homebrew
+    command: '{{ dotfiles_dir }}/brew/install.sh'
+    register: command_output
+    changed_when: "'installed' not in command_output.stdout"
+  - name: Brew install wget
+    homebrew:
+      name: wget
+      state: present
+  - name: Brew install maven
+    homebrew:
+      name: maven
+      state: present
+  - name: Brew install bash-completion
+    homebrew:
+      name: bash-completion
+      state: present
+      update_homebrew: true
+  - name: Brew tap homebrew-core
+    homebrew_tap:
+      name: homebrew/homebrew-core
+

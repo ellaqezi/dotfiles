@@ -15,11 +15,12 @@
 	sudo pip install ansible
 	```
 
-1. Run the playbook to setup dotfiles
+1. Run the playbook to setup dotfiles, provide `become` (sudo) password
 	```
-	ansible-playbook setup-dotfiles.yml
-	ansible-playbook -i ansible/hosts setup-dotfiles.yml (when ansible/hosts is not yet symlinked into place)
+	ansible-playbook setup-dotfiles.yml --ask-become-pass
+	ansible-playbook -i ansible/hosts setup-dotfiles.yml --ask-become-pass (when ansible/hosts is not yet symlinked into place)
 	```
 
 ## References
 1. [Ansible installation](http://docs.ansible.com/ansible/latest/intro_installation.html#latest-releases-via-pip)
+1. [Homebrew}(https://brew.sh/)

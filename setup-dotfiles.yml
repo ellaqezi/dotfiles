@@ -9,6 +9,10 @@
       - git 
       - maven
       - wget
+    brew_casks:
+      - flux
+      - intellij-idea-ce
+      - sublime-text
   tasks:
   - name: Create ansible directory
     file: path={{ modules_dir }} state=directory
@@ -34,11 +38,16 @@
     homebrew:
       state: latest
       update_homebrew: yes
-  - name: Install libraries/utils with homebrew
+  - name: Install with homebrew
     homebrew:
       name: "{{ item }}"
       state: present
     with_items: "{{ brew_utils }}"
+  - name: Install with homebrew cask
+    homebrew_cask:
+      name: "{{ item }}"
+      state: present
+    with_items: "{{ brew_casks }}"
   - name: Install docker-machine
     command: '{{ dotfiles_dir }}/docker/machine.sh'
     become: true

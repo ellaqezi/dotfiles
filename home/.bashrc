@@ -59,7 +59,7 @@ git_branch() {
      git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ [\1]/'
 }
 if [ "$color_prompt" = yes ]; then
-    PS1='${debian_chroot:+($debian_chroot)}\[\e[34m\]\u@\h \[\e[36m\]\W/\[\e[32m\]$(git_branch)\[\033[00m\] ⇨ '
+    PS1='${debian_chroot:+($debian_chroot)}\[\e[34m\]\u@\h \[\e[36m\]\W/$(__docker_machine_ps1)\[\e[32m\]$(git_branch)\[\033[00m\] ⇨ '
 else
     PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
 fi

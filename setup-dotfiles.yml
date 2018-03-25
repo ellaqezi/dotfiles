@@ -37,6 +37,11 @@
       name: bash-completion
       state: present
       update_homebrew: true
+  - name: Install docker-machine
+    command: '{{ dotfiles_dir }}/docker/machine.sh'
+    become: true
+    register: command_output
+    changed_when: "'installed' not in command_output.stdout"
   - name: Brew tap homebrew-core
     homebrew_tap:
       name: homebrew/homebrew-core

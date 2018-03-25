@@ -3,6 +3,12 @@
     home_dir: "{{ ansible_env.HOME }}" 
     dotfiles_dir: "{{ playbook_dir }}"
     modules_dir: '/etc/ansible/modules'
+    brew_utils:
+      - bash-completion
+      - docker
+      - git 
+      - maven
+      - wget
   tasks:
   - name: Create ansible directory
     file: path={{ modules_dir }} state=directory
@@ -24,25 +30,17 @@
     command: '{{ dotfiles_dir }}/brew/install.sh'
     register: command_output
     changed_when: "'installed' not in command_output.stdout"
-  - name: Brew install wget
+  - name: Ensure homebrew is updated 
     homebrew:
-      name: wget
-      state: present
-  - name: Brew install maven
+      state: latest
+      update_homebrew: yes
+  - name: Install libraries/utils with homebrew
     homebrew:
-      name: maven
+      name: "{{ item }}"
       state: present
-  - name: Brew install bash-completion
-    homebrew:
-      name: bash-completion
-      state: present
-      update_homebrew: true
+    with_items: "{{ brew_utils }}"
   - name: Install docker-machine
     command: '{{ dotfiles_dir }}/docker/machine.sh'
     become: true
     register: command_output
     changed_when: "'installed' not in command_output.stdout"
-  - name: Brew tap homebrew-core
-    homebrew_tap:
-      name: homebrew/homebrew-core
-

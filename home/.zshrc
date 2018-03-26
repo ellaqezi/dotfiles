@@ -92,7 +92,7 @@ source $ZSH/oh-my-zsh.sh
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
-
+source $HOME/.aliases
 export SPACESHIP_CHAR_SYMBOL="❯ "
 export SPACESHIP_GIT_BRANCH_COLOR=blue
 export SPACESHIP_GIT_STATUS_COLOR=245

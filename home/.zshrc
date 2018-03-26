@@ -93,10 +93,24 @@ source $ZSH/oh-my-zsh.sh
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 source $HOME/.aliases
+
+#export SPACESHIP_CHAR_SYMBOL="➤ "
 export SPACESHIP_CHAR_SYMBOL="❯ "
+export SPACESHIP_GIT_STATUS_PREFIX=" "
+export SPACESHIP_GIT_STATUS_SUFFIX=""
 export SPACESHIP_GIT_BRANCH_COLOR=blue
 export SPACESHIP_GIT_STATUS_COLOR=245
-export SPACESHIP_GIT_STATUS_ADDED="%F{green}+%F{245}"
-export SPACESHIP_GIT_STATUS_UNTRACKED="%F{yellow}?%F{245}"
-export SPACESHIP_GIT_STATUS_DELETED="%F{blue}✘%F{245}"
-export SPACESHIP_GIT_STATUS_MODIFIED="%F{red}!%F{245}"
+
+## ••••
+BULLET=•
+#BULLET=●
+export SPACESHIP_GIT_STATUS_ADDED="%F{green}$BULLET%F{255}"
+export SPACESHIP_GIT_STATUS_UNTRACKED="%F{yellow}$BULLET%F{245}"
+export SPACESHIP_GIT_STATUS_DELETED="%F{237}$BULLET%F{240}"
+export SPACESHIP_GIT_STATUS_MODIFIED="%F{red}$BULLET%F{250}"
+
+## +?x!
+#export SPACESHIP_GIT_STATUS_ADDED="%F{green}+%F{245}"
+#export SPACESHIP_GIT_STATUS_UNTRACKED="%F{yellow}?%F{245}"
+#export SPACESHIP_GIT_STATUS_DELETED="%F{237}x%F{245}"
+#export SPACESHIP_GIT_STATUS_MODIFIED="%F{red}!%F{245}"

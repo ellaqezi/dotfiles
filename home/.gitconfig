@@ -3,6 +3,10 @@
 [user]
 	name = ellaqezi 
 	email = ellaqezi@gmail.com 
+[color "status"]
+  added = green
+  changed = red
+  untracked = yellow
 [alias]
         lg = log --color --graph --abbrev-commit\n           --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%C(bold blue)<%an>%Creset'
         puh = push -u upstream HEAD

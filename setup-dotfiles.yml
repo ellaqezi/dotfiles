@@ -8,6 +8,7 @@
       - docker
       - git 
       - maven
+      - watch
       - wget
       - zsh
       - zsh-completions
@@ -74,6 +75,7 @@
       src: '{{ item.src }}'
       dest: '{{ home_dir }}/{{ item.path }}'
       state: link
+      force: yes
     with_filetree:
       - '{{ dotfiles_dir }}/home/'
   - name: Install homebrew

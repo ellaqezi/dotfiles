@@ -8,3 +8,6 @@ alias gitbun="git bundle create - HEAD | uuencode /dev/stdout"
 # uue
 alias uecp="bzip2 | uuencode /dev/stdout"
 alias uedc="uudecode -o - | bunzip2 "
+
+alias k9="kill -9"
+alias pag="ps aux | grep"

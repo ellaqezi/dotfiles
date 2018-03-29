@@ -25,16 +25,23 @@
 	```
     > Note: `become` i.e. SUDO password is required to ensure `docker-py` is installed
 
+
+## ToDos
+- [ ] separate OS-dependent from OS-agnostic tasks in [setup playbook]
+
 ## References
 1. [Ansible installation]
 1. [Homebrew]
 1. [Oh my zsh]
 1. [Powerline fonts]
 1. [Spaceship prompt]
+1. [Ansible | tips n tricks]
 
 [Ansible installation]: http://docs.ansible.com/ansible/latest/intro_installation.html#latest-releases-via-pip
+[Ansible | tips n tricks]: https://ansible-tips-and-tricks.readthedocs.io/en/latest/os-dependent-tasks/variables/
 [Homebrew]: https://brew.sh/
 [Oh my zsh]: https://github.com/robbyrussell/oh-my-zsh
 [Powerline fonts]: https://github.com/powerline/fonts
+[setup playbook]: ./setup-dotfiles.yml
 [Spaceship prompt]: https://github.com/denysdovhan/spaceship-prompt
 [zsh.png]: ./docs/zsh.png

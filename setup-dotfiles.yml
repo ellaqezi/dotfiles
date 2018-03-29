@@ -72,12 +72,12 @@
     when: clone_spaceship is defined and clone_spaceship|succeeded
   - name: Symlink config files
     file:
-      src: '{{ item.src }}'
+      src: '{{ item.root }}{{ item.path }}'
       dest: '{{ home_dir }}/{{ item.path }}'
       state: link
       force: yes
-    with_filetree:
-      - '{{ dotfiles_dir }}/home/'
+    with_filetree: '{{ dotfiles_dir }}/home/'
+    when: item.state == 'file'
   - name: Install homebrew
     command: '{{ dotfiles_dir }}/brew/install.sh'
     register: command_output

@@ -8,6 +8,7 @@
       - docker
       - git 
       - maven
+      - tree
       - watch
       - wget
       - zsh

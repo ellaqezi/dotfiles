@@ -1,0 +1,15 @@
+brew_utils:
+  - bash-completion
+  - docker
+  - git
+  - maven
+  - tree
+  - watch
+  - wget
+  - zsh
+  - zsh-completions
+brew_casks:
+  - flux
+  - intellij-idea-ce
+  - sublime-text
+font_dir: "{{ ansible_env.HOME }}/Library/Fonts"

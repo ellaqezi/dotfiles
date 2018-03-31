@@ -1,0 +1,60 @@
+- name: Stat oh-my-zsh
+  stat:
+    path: '{{ home_dir }}/.oh-my-zsh'
+  register: zsh
+- name: Cloning oh-my-zsh
+  git:
+    repo=https://github.com/robbyrussell/oh-my-zsh
+    dest='{{ home_dir }}/.oh-my-zsh'
+  register: clone_omz
+  when: zsh.stat.exists == False
+- name: Creating new ~/.zshrc
+  copy:
+    src='{{ home_dir }}/.oh-my-zsh/templates/zshrc.zsh-template'
+    dest='{{ dotfiles_dir }}/home/.zshrc'
+  when: zsh.stat.exists == False and clone_omz is defined and clone_omz|succeeded
+- name: Stat powerline
+  stat:
+    path: '{{ font_dir }}/FuraMono-Regular Powerline.otf'
+  register: powerline
+- name: create temporary powerline directory
+  tempfile:
+    state: directory
+    prefix: "powerline."
+  register: temp
+  when: powerline.stat.exists == False
+- set_fact:
+    powerline_dir: "{{ temp.path }}"
+  when: powerline.stat.exists == False
+- name: Cloning powerline fonts
+  git:
+    repo=https://github.com/powerline/fonts
+    dest='{{ powerline_dir }}/powerline'
+  register: clone_powerline
+  when: powerline.stat.exists == False
+- name: Install powerline fonts
+  command: '{{ powerline_dir }}/powerline/install.sh'
+  when: powerline.stat.exists == False and clone_powerline is defined and clone_powerline|succeeded
+- name: Stat spaceship theme
+  stat:
+    path: '{{ home_dir }}/.oh-my-zsh/themes/spaceship-prompt'
+  register: spaceship
+- name: Cloning spaceship theme
+  git:
+    repo=https://github.com/denysdovhan/spaceship-prompt
+    dest='{{ home_dir }}/.oh-my-zsh/themes/spaceship-prompt/'
+  register: clone_spaceship
+  when: spaceship.stat.exists == False
+- name: Symlink spaceship theme
+  file:
+    src='{{ home_dir }}/.oh-my-zsh/themes/spaceship-prompt/spaceship.zsh-theme'
+    dest='{{ home_dir }}/.oh-my-zsh/themes/spaceship.zsh-theme'
+    state=link
+  when: clone_spaceship is defined and clone_spaceship|succeeded
+- name: Add ansible section to theme
+  lineinfile:
+    path: '{{ home_dir }}/.oh-my-zsh/themes/spaceship-prompt/spaceship.zsh'
+    regexp: '^\sdocker'
+    insertafter: '^.*docker'
+    line: '    ansible       # Ansible section'
+  when: spaceship.stat.exists == False

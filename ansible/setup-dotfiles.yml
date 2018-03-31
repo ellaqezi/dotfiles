@@ -1,0 +1,31 @@
+- hosts: localhost 
+  vars:
+    home_dir: "{{ ansible_env.HOME }}" 
+    dotfiles_dir: "{{ playbook_dir }}/../"
+    modules_dir: '/etc/ansible/modules'
+  tasks:
+  - name: Create ansible directory
+    file: path={{ modules_dir }} state=directory
+    become: true
+  - name: Symlink ansible hosts
+    file:
+      src: '{{ playbook_dir }}/hosts'
+      dest: '/etc/ansible/hosts' 
+      state: link
+    become: true
+  - include_vars: "vars/{{ ansible_distribution }}.yml"
+  - include_tasks: "tasks/setup-zsh.yml"
+  - name: Symlink config files
+    file:
+      src: '{{ item.root }}{{ item.path }}'
+      dest: '{{ home_dir }}/{{ item.path }}'
+      state: link
+      force: yes
+    with_filetree: '{{ dotfiles_dir }}/home/'
+    when: item.state == 'file'
+  - include_tasks: "tasks/{{ ansible_distribution }}.yml"
+  - name: Install docker-machine
+    command: '{{ dotfiles_dir }}/docker/machine.sh'
+    become: true
+    register: command_output
+    changed_when: "'installed' not in command_output.stdout"

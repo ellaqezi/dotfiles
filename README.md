@@ -20,14 +20,15 @@ Setup via ansible `2.4.3.0`  🤖
 
 1. Run the playbook to setup dotfiles, provide `become` i.e. SUDO password
 	```
+	cd ansible
     ansible-playbook setup-dotfiles.yml --ask-become-pass
-    ansible-playbook -i ansible/hosts setup-dotfiles.yml --ask-become-pass (when ansible/hosts is not yet symlinked into place)
+    ansible-playbook -i hosts setup-dotfiles.yml --ask-become-pass (when ansible/hosts is not yet symlinked into place)
 	```
     > Note: `become` i.e. SUDO password is required to ensure `docker-py` is installed
 
 
 ## ToDos
-- [ ] separate OS-dependent from OS-agnostic tasks in [setup playbook]
+- [x] separate OS-dependent from OS-agnostic tasks in [setup playbook]
 - [x] workaround [**BUG** filetree]
 
 ## Known issues

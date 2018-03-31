@@ -13,3 +13,5 @@
         puf = push --force upstream HEAD
         s = status -s
         d = diff
+[core]
+	editor = /usr/bin/vim

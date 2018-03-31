@@ -71,6 +71,13 @@
       dest='{{ home_dir }}/.oh-my-zsh/themes/spaceship.zsh-theme'
       state=link
     when: clone_spaceship is defined and clone_spaceship|succeeded
+  - name: Add ansible section to theme
+    lineinfile:
+      path: '{{ home_dir }}/.oh-my-zsh/themes/spaceship-prompt/spaceship.zsh'
+      regexp: '^\sdocker'
+      insertafter: '^.*docker'
+      line: '    ansible       # Ansible section'
+    when: spaceship.stat.exists == False
   - name: Symlink config files
     file:
       src: '{{ item.root }}{{ item.path }}'

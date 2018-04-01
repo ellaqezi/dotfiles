@@ -1,4 +1,5 @@
 extra_utils:
+  - zsh-autosuggestions
   - zsh-completions
 brew_utils: "{{ utils }} + {{ extra_utils }}"
 brew_casks:

@@ -1,0 +1,11 @@
+- hosts: localhost
+  vars:
+    font_dir: "{{ ansible_env.HOME }}/Library/Fonts"
+  tasks:
+    - debug: msg="{{ ansible_distribution }}.yml"
+    - name: Stat powerline
+      stat:
+        path: '{{ font_dir }}/FuraMono-Regular Powerline.otf'
+      register: pl
+    - debug: msg="{{ pl.stat.exists }}"
+

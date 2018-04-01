@@ -9,8 +9,8 @@
   untracked = yellow
 [alias]
         lg = log --color --graph --abbrev-commit\n           --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%C(bold blue)<%an>%Creset'
-        puh = push -u upstream HEAD
-        puf = push --force upstream HEAD
+        puh = push -u origin HEAD
+        puf = push --force
         s = status -s
         d = diff
 [core]

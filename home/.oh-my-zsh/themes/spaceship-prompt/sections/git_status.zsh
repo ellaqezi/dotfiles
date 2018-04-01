@@ -39,16 +39,6 @@ spaceship_git_status() {
 
   INDEX=$(command git status --porcelain -b 2> /dev/null)
 
-  # Check for modified files
-  if $(echo "$INDEX" | command grep '^[ MARC]M ' &> /dev/null); then
-    git_status="$SPACESHIP_GIT_STATUS_MODIFIED$git_status"
-  fi
-
-  # Check for untracked files
-  if $(echo "$INDEX" | command grep -E '^\?\? ' &> /dev/null); then
-    git_status="$SPACESHIP_GIT_STATUS_UNTRACKED$git_status"
-  fi
-
   # Check for staged files
   if $(echo "$INDEX" | command grep '^A[ MDAU] ' &> /dev/null); then
     git_status="$SPACESHIP_GIT_STATUS_ADDED$git_status"
@@ -56,6 +46,16 @@ spaceship_git_status() {
     git_status="$SPACESHIP_GIT_STATUS_ADDED$git_status"
   elif $(echo "$INDEX" | command grep '^UA' &> /dev/null); then
     git_status="$SPACESHIP_GIT_STATUS_ADDED$git_status"
+  fi
+
+  # Check for untracked files
+  if $(echo "$INDEX" | command grep -E '^\?\? ' &> /dev/null); then
+    git_status="$SPACESHIP_GIT_STATUS_UNTRACKED$git_status"
+  fi
+
+  # Check for modified files
+  if $(echo "$INDEX" | command grep '^[ MARC]M ' &> /dev/null); then
+    git_status="$SPACESHIP_GIT_STATUS_MODIFIED$git_status"
   fi
 
   # Check for renamed files

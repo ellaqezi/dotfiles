@@ -3,6 +3,15 @@
     home_dir: "{{ ansible_env.HOME }}" 
     dotfiles_dir: "{{ playbook_dir }}/../"
     modules_dir: '/etc/ansible/modules'
+    utils:
+      - bash-completion
+      - docker
+      - git
+      - maven
+      - tree
+      - watch
+      - wget
+      - zsh
   tasks:
   - name: Create ansible directory
     file: path={{ modules_dir }} state=directory

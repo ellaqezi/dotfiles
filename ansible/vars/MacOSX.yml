@@ -1,13 +1,6 @@
-brew_utils:
-  - bash-completion
-  - docker
-  - git
-  - maven
-  - tree
-  - watch
-  - wget
-  - zsh
+extra_utils:
   - zsh-completions
+brew_utils: "{{ utils }} + {{ extra_utils }}"
 brew_casks:
   - flux
   - intellij-idea-ce

@@ -1,0 +1,11 @@
+- name: Ensure apt is updated
+  apt:
+    state: latest
+    update_cache: yes
+  become: true
+- name: Install with apt
+  apt:
+    name: "{{ item }}"
+    state: present
+  with_items: "{{ apt_utils }}"
+  become: true

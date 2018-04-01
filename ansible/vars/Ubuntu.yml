@@ -1,0 +1,10 @@
+font_dir: '{{ ansible_env.HOME }}/.local/share/fonts'
+apt_utils:
+  - bash-completion
+  - docker
+  - git
+  - maven
+  - tree
+  - watch
+  - wget
+  - zsh

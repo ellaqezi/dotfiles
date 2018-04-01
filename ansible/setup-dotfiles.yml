@@ -12,6 +12,7 @@
       src: '{{ playbook_dir }}/hosts'
       dest: '/etc/ansible/hosts' 
       state: link
+      force: yes
     become: true
   - include_vars: "vars/{{ ansible_distribution }}.yml"
   - include_tasks: "tasks/setup-zsh.yml"

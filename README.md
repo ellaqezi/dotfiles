@@ -16,6 +16,9 @@ Setup via ansible `2.4.3.0`  🤖
 1. Install ansible
 	```
     sudo pip install ansible
+    
+    [Ubuntu]
+    sudo pip install --prefix /usr/local ansible
 	```
 
 1. Run the playbook to setup dotfiles, provide `become` i.e. SUDO password

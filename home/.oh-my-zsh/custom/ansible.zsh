@@ -31,7 +31,7 @@ spaceship_ansible() {
   # Here glob qualifiers are used to check if files with specific extension are
   # present in directory. Read more about them here:
   # http://zsh.sourceforge.net/Doc/Release/Expansion.html
-  [[ -f ansible.conf || -n *.yml(#qN^/) || -f .ansible.cfg ]] || return
+  [[ -f ansible.cfg || -f .ansible.cfg || -n *.yml(#qN^/) ]] || return
 
   # Check if ansible command is available for execution
   spaceship::exists ansible || return

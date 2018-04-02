@@ -1,23 +1,26 @@
 - name: Stat oh-my-zsh
   stat:
-    path: '{{ home_dir }}/.oh-my-zsh'
+    path: "{{ item }}"
+  with_items:
+    - '{{ home_dir }}/.oh-my-zsh'
+    - '{{ dotfiles_dir }}/home/.zshrc'
   register: zsh
-- name: Cloning oh-my-zsh
+- name: Clone oh-my-zsh
   git:
     repo=https://github.com/robbyrussell/oh-my-zsh
     dest='{{ home_dir }}/.oh-my-zsh'
   register: clone_omz
-  when: zsh.stat.exists == False
+  when: zsh.results[0].stat.exists == False
 - name: Creating new ~/.zshrc
   copy:
     src='{{ home_dir }}/.oh-my-zsh/templates/zshrc.zsh-template'
     dest='{{ dotfiles_dir }}/home/.zshrc'
-  when: zsh.stat.exists == False and clone_omz is defined and clone_omz|succeeded
+  when: zsh.results[1].stat.exists == False
 - name: Stat powerline
   stat:
     path: '{{ font_dir }}/FuraMono-Regular Powerline.otf'
   register: powerline
-- name: create temporary powerline directory
+- name: Create temporary powerline directory
   tempfile:
     state: directory
     prefix: "powerline."
@@ -26,7 +29,7 @@
 - set_fact:
     powerline_dir: "{{ temp.path }}"
   when: powerline.stat.exists == False
-- name: Cloning powerline fonts
+- name: Clone powerline fonts
   git:
     repo=https://github.com/powerline/fonts
     dest='{{ powerline_dir }}/powerline'
@@ -39,7 +42,7 @@
   stat:
     path: '{{ home_dir }}/.oh-my-zsh/themes/spaceship-prompt'
   register: spaceship
-- name: Cloning spaceship theme
+- name: Clone spaceship theme
   git:
     repo=https://github.com/denysdovhan/spaceship-prompt
     dest='{{ home_dir }}/.oh-my-zsh/themes/spaceship-prompt/'

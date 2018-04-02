@@ -1,3 +1,5 @@
+.idea
+!.idea/settings.jar
 .bash_history
 .bash_logout
 *.retry

@@ -1,5 +1,5 @@
 # dotfiles
-Setup via ansible `2.4.3.0`  🤖
+Setup via ansible `2.5.0`  🤖
 
 ![zsh][zsh.png]
 

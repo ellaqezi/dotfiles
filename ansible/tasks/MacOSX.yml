@@ -6,11 +6,6 @@
   homebrew:
     state: latest
     update_homebrew: yes
-- name: Install with homebrew
-  homebrew:
-    name: "{{ item }}"
-    state: present
-  with_items: "{{ brew_utils }}"
 - name: Install with homebrew cask
   homebrew_cask:
     name: "{{ item }}"

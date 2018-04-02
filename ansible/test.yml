@@ -1,11 +1,21 @@
 - hosts: localhost
-  vars:
-    font_dir: "{{ ansible_env.HOME }}/Library/Fonts"
   tasks:
+    #    - include_vars: "vars/{{ ansible_distribution }}.yml"
     - debug: msg="{{ ansible_distribution }}.yml"
-    - name: Stat powerline
+    - debug: msg="{{ ansible_distribution_release }}"
+    - debug: msg="{{ ansible_distribution_version }}"
+    - debug: msg="{{ ansible_pkg_mgr }}"
+#    - name: Stat powerline
+#      stat:
+#        path: '{{ font_dir }}/FuraMono-Regular Powerline.otf'
+#      register: pl
+#    - debug: msg="{{ pl.stat.exists }}"
+    - name: Stat oh-my-zsh
       stat:
-        path: '{{ font_dir }}/FuraMono-Regular Powerline.otf'
-      register: pl
-    - debug: msg="{{ pl.stat.exists }}"
+        path: "{{ item }}"
+      with_items:
+        - '{{ ansible_env.HOME }}/.oh-my-zsh'
+        - '{{ playbook_dir }}/../home/.zshrc'
+      register: zsh
+    - debug: msg="{{zsh.results[0].stat.exists}}"
 

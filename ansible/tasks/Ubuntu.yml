@@ -1,11 +1,17 @@
+- name: Add repos
+  apt_repository: 
+    repo: "{{ item }}" 
+    state: present
+  with_items: "{{ apt_repos }}"
+- name: Add keys
+  apt_key:
+    url: "{{ item }}"
+    state: present
+  with_items: "{{ apt_keys }}"
+  become: true
 - name: Ensure apt is updated
   apt:
     state: latest
     update_cache: yes
-  become: true
-- name: Install with apt
-  apt:
-    name: "{{ item }}"
-    state: present
-  with_items: "{{ apt_utils }}"
+    cache_valid_time: 3600
   become: true

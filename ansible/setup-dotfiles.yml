@@ -3,7 +3,7 @@
     home_dir: "{{ ansible_env.HOME }}" 
     dotfiles_dir: "{{ playbook_dir }}/../"
     modules_dir: '/etc/ansible/modules'
-    utils:
+    common:
       - bash-completion
       - docker
       - git
@@ -12,6 +12,7 @@
       - watch
       - wget
       - zsh
+      - zsh-completions
   tasks:
   - name: Create ansible directory
     file: path={{ modules_dir }} state=directory
@@ -27,13 +28,18 @@
   - include_tasks: "tasks/setup-zsh.yml"
   - name: Symlink config files
     file:
-      src: '{{ item.root }}{{ item.path }}'
+      src: '{{ item.src }}'
       dest: '{{ home_dir }}/{{ item.path }}'
       state: link
       force: yes
     with_filetree: '{{ dotfiles_dir }}/home/'
     when: item.state == 'file'
   - include_tasks: "tasks/{{ ansible_distribution }}.yml"
+  - name: Install with {{ ansible_pkg_mgr }}
+    action: >
+      {{ ansible_pkg_mgr }} name="{{ item }}" state=latest
+    with_items: "{{ utils }}"
+    become: "{{ false if ansible_pkg_mgr == 'homebrew' else true}}"
   - name: Install docker-machine
     command: '{{ dotfiles_dir }}/docker/machine.sh'
     become: true

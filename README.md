@@ -30,9 +30,10 @@ Setup via ansible `2.5.0`  🤖
 
 1. Run the playbook to setup dotfiles, provide `become` i.e. SUDO password
 	```
-	cd ansible
+    cd ansible/
     ansible-playbook setup-dotfiles.yml --ask-become-pass
-    ansible-playbook -i hosts setup-dotfiles.yml --ask-become-pass (when ansible/hosts is not yet symlinked into place)
+    ... OR when ansible/hosts is not yet symlinked into place
+    ansible-playbook -i hosts setup-dotfiles.yml --ask-become-pass 
 	```
     > Note: `become` i.e. SUDO password is required to ensure `docker-py` is installed
 
@@ -41,14 +42,15 @@ Setup via ansible `2.5.0`  🤖
 - [x] separate OS-dependent from OS-agnostic tasks in [setup playbook]
 - [x] workaround [**BUG** filetree]
 
+
 ## Known issues
-> <a name="filetree-bug"/>🐛 **BUG** filetree <br/>
-> ⚠️ *New in [version 2.4]* <br/>
+> <a name="filetree-bug"/>🐛 **BUG** filetree *affects [version 2.4]* ⚠️ <br/>
 > throws error: **'dict object' has no attribute 'src'** although the
 dictionary starts with `(item={'src':` <br/>
 >
 > 🦄 **FIX** concatenate `item.root` and `item.path` and use that
 instead of `item.src`
+
 
 ## References
 1. [Ansible | installation]

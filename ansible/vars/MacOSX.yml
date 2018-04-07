@@ -3,6 +3,7 @@ extra_utils:
 utils: "{{ common }} + {{ extra_utils }}"
 brew_casks:
   - flux
+  - gimp
   - intellij-idea-ce
   - sublime-text
 font_dir: "{{ ansible_env.HOME }}/Library/Fonts"

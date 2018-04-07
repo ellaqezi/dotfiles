@@ -43,7 +43,7 @@
     action: >
       {{ ansible_pkg_mgr }} name="{{ item }}" state=latest
     with_items: "{{ utils }}"
-    become: "{{ false if ansible_pkg_mgr == 'homebrew' else true}}"
+    become: "{{ false if ansible_pkg_mgr == 'homebrew' else true }}"
   - name: Install docker-machine
     command: '{{ dotfiles_dir }}/docker/machine.sh'
     become: true

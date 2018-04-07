@@ -15,3 +15,5 @@
     update_cache: yes
     cache_valid_time: 3600
   become: true
+- name: Set default shell to zsh
+  command: "chsh -s $(which zsh)"

@@ -1,3 +1,4 @@
+*.iml
 .idea
 !.idea/settings.jar
 .bash_history

@@ -1,0 +1,17 @@
+- set_fact:
+    os_vars: "vars/{{ ansible_distribution }}.yml"
+    os_tasks: "tasks/{{ ansible_distribution }}.yml"
+- name: Stat OS-specific vars and tasks
+  stat:
+    path: "{{ item }}"
+  with_items:
+    - "{{ os_vars }}"
+    - "{{ os_tasks }}"
+  register: os
+- set_fact:
+    os_files: "{{ os_files | default({}) | combine({item.item: item.stat.exists})  }}"
+  with_items: "{{ os.results }}"
+- debug: msg="{{ os_files }}"
+- set_fact:
+    vars_exist: "{{ os_files[os_vars] }}"
+    tasks_exist: "{{ os_files[os_tasks] }}"

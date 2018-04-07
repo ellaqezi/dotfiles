@@ -8,6 +8,7 @@
       - docker
       - git
       - maven
+      - python
       - tree
       - watch
       - wget
@@ -24,7 +25,9 @@
       state: link
       force: yes
     become: true
-  - include_vars: "vars/{{ ansible_distribution }}.yml"
+  - include_tasks: "tasks/os-specific.yml"
+  - include_vars: "{{ os_vars }}"
+    when: vars_exist
   - include_tasks: "tasks/setup-zsh.yml"
   - name: Symlink config files
     file:
@@ -34,7 +37,8 @@
       force: yes
     with_filetree: '{{ dotfiles_dir }}/home/'
     when: item.state == 'file'
-  - include_tasks: "tasks/{{ ansible_distribution }}.yml"
+  - include_tasks: "{{ os_tasks }}"
+    when: tasks_exist
   - name: Install with {{ ansible_pkg_mgr }}
     action: >
       {{ ansible_pkg_mgr }} name="{{ item }}" state=latest

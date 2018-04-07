@@ -7,6 +7,13 @@ Setup via ansible `2.5.0`  🤖
 	```
 	  git clone git://repo/to/ellaqezi/dotfiles.git ~/Documents/projects/dotfiles
 	```
+1. Edit the `.gitconfig` file and use your own `user.name` and `user.email`
+
+    ```
+    [user]
+    	name = ellaqezi 
+    	email = ellaqezi@gmail.com
+    ```
 
 1. [OPTIONAL] Install `pip` if not yet installed on the machine
 	```

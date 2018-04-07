@@ -1,21 +1,19 @@
 - hosts: localhost
   tasks:
-    #    - include_vars: "vars/{{ ansible_distribution }}.yml"
     - debug: msg="{{ ansible_distribution }}.yml"
     - debug: msg="{{ ansible_distribution_release }}"
     - debug: msg="{{ ansible_distribution_version }}"
     - debug: msg="{{ ansible_pkg_mgr }}"
-#    - name: Stat powerline
-#      stat:
-#        path: '{{ font_dir }}/FuraMono-Regular Powerline.otf'
-#      register: pl
-#    - debug: msg="{{ pl.stat.exists }}"
-    - name: Stat oh-my-zsh
+    - name: Stat OS-specific vars and tasks
       stat:
         path: "{{ item }}"
       with_items:
-        - '{{ ansible_env.HOME }}/.oh-my-zsh'
-        - '{{ playbook_dir }}/../home/.zshrc'
-      register: zsh
-    - debug: msg="{{zsh.results[0].stat.exists}}"
-
+        - "vars/{{ ansible_distribution }}.yml"
+        - "tasks/{{ ansible_distribution }}.yml"
+        - "vars/some.yml"
+      register: os
+    - set_fact:
+        path_stat: "{{ path_stat | default([]) + [ {item.item: item.stat.exists} ] }}"
+      with_items: "{{ os.results }}"
+    - debug: msg="{{ path_stat }}"
+    - debug: msg="{{ ansible_os_family }}"

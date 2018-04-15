@@ -1,0 +1,6 @@
+# intellij
+*.iml
+.idea/
+
+# ansible
+*.retry

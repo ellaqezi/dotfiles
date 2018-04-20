@@ -1,6 +1,9 @@
 # docker
 alias dbash='dbash() { docker exec -it $1 /bin/bash ;}; dbash'
 
+# git
+alias gitrif="git rebase --interactive $(git log --follow --find-renames=40% --diff-filter=A --format=%H -- $FILE)~"
+alias gitlc="git ls-files | xargs wc -l"
 # git file transfer ;-)
 alias gitarc="git archive HEAD | bzip2 | uuencode /dev/stdout"
 alias gitbun="git bundle create - HEAD | uuencode /dev/stdout"

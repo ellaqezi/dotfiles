@@ -3,11 +3,13 @@ Setup via ansible `2.5.0`  🤖
 
 ![zsh][zsh.png]
 
-1. Clone the repo into `~/Documents/projects/`
+## Install
+1. Clone the repo into `$USER_HOME/.dotfiles`
 	```
-	  git clone git://repo/to/ellaqezi/dotfiles.git ~/Documents/projects/dotfiles
+	  git clone git@github.com:ellaqezi/dotfiles.git ~/.dotfiles
 	```
-1. Edit the `.gitconfig` file and use your own `user.name` and `user.email`
+	
+1. Edit the `home/.gitconfig` file and use your own `user.name` and `user.email`
 
     ```
     [user]
@@ -15,16 +17,16 @@ Setup via ansible `2.5.0`  🤖
     	email = ellaqezi@gmail.com
     ```
 
-1. [OPTIONAL] Install `pip` if not yet installed on the machine
+1. [OPTIONAL] Install `pip`, if not yet installed on the machine
 	```
     sudo easy_install pip
 	```
 
-1. Install ansible
+1. [OPTIONAL] Install `ansible`, if not yet installed on the machine
 	```
     sudo pip install ansible
     
-    [Ubuntu]
+    # [Ubuntu]
     sudo pip install --prefix /usr/local ansible
 	```
 
@@ -32,7 +34,8 @@ Setup via ansible `2.5.0`  🤖
 	```
     cd ansible/
     ansible-playbook setup-dotfiles.yml --ask-become-pass
-    ... OR when ansible/hosts is not yet symlinked into place
+    
+    # ... OR when ansible/hosts is not yet symlinked into place
     ansible-playbook -i hosts setup-dotfiles.yml --ask-become-pass 
 	```
     > Note: `become` i.e. SUDO password is required to ensure `docker-py` is installed
@@ -69,4 +72,4 @@ instead of `item.src`
 [setup playbook]: ./setup-dotfiles.yml
 [Spaceship prompt]: https://github.com/denysdovhan/spaceship-prompt
 [version 2.4]: https://docs.ansible.com/ansible/devel/plugins/lookup/filetree.html
-[zsh.png]: ./docs/zsh.png
+[zsh.png]: docs/zsh.png

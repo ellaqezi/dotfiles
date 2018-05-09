@@ -59,7 +59,7 @@ ZSH_THEME="spaceship"
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(
-  git zsh-autosuggestions
+  git docker zsh-autosuggestions
 )
 
 source $ZSH/oh-my-zsh.sh
@@ -100,7 +100,6 @@ export SPACESHIP_GIT_STATUS_PREFIX=" "
 export SPACESHIP_GIT_STATUS_SUFFIX=""
 export SPACESHIP_GIT_BRANCH_COLOR=blue
 export SPACESHIP_GIT_STATUS_COLOR=245
-#export SPACESHIP_BATTERY_SHOW=always
 export SPACESHIP_BATTERY_SYMBOL_CHARGING="⚡ "
 export SPACESHIP_BATTERY_SYMBOL_FULL="🔋 "
 

@@ -1,7 +1,7 @@
 - hosts: localhost 
   vars:
     home_dir: "{{ ansible_env.HOME }}" 
-    dotfiles_dir: "{{ playbook_dir }}/../"
+    dotfiles_dir: "{{ playbook_dir }}/.."
     modules_dir: '/etc/ansible/modules'
     common:
       - bash-completion

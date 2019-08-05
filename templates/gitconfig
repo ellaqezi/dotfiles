@@ -1,0 +1,18 @@
+[credential]
+    helper = cache --timeout 28800
+[user]
+	name  = NAME
+	email = EMAIL
+[color "status"]
+    added = green
+    changed = red
+    untracked = yellow
+[alias]
+    lg = log --color --graph --abbrev-commit\n           --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%C(bold blue)<%an>%Creset'
+    puh = push -u origin HEAD
+    puf = push --force
+    s = status -s
+    d = diff
+[core]
+	editor = /usr/bin/vim
+	excludesfile = ~/.gitignore_global

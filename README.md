@@ -1,5 +1,5 @@
 # dotfiles
-Setup via ansible `2.8.3`  🤖
+Setup via ansible 🤖 Requires `2.5.0+`
 
 ![zsh][zsh.png]
 
@@ -11,6 +11,7 @@ Setup via ansible `2.8.3`  🤖
 	```
  
     > The Makefile instructs you on what it requires e.g. `NAME`, `EMAIL`, `Password` (refers to your SUDO password)
+
 
 ### Step-by-step 	
 1. Edit the `templates/.gitconfig` file with your own `user.name` and `user.email`, and move it to `home/.gitconfig`
@@ -44,21 +45,6 @@ Setup via ansible `2.8.3`  🤖
 	```
     > Note: `become` i.e. SUDO password is required to ensure `docker-py` is installed
 
-
-## ToDos
-- [x] separate OS-dependent from OS-agnostic tasks in [setup playbook]
-- [x] workaround [**BUG** filetree]
-
-
-## Known issues
-> <a name="filetree-bug"/>🐛 **BUG** filetree *affects [version 2.4]* ⚠️ <br/>
-> throws error: **'dict object' has no attribute 'src'** although the
-dictionary starts with `(item={'src':` <br/>
->
-> 🦄 **FIX** concatenate `item.root` and `item.path` and use that
-instead of `item.src`
-
-
 ## References
 1. [Ansible | installation]
 1. [Ansible | tips n tricks]
@@ -66,14 +52,15 @@ instead of `item.src`
 1. [Oh my zsh]
 1. [Powerline fonts]
 1. [Spaceship prompt]
+1. [`ansible/ansible#51513`](https://github.com/ansible/ansible/issues/51513#issuecomment-459150769)
+1. [`ansible/ansible#54347`](https://github.com/ansible/ansible/pull/54347)
 
 [Ansible | installation]: http://docs.ansible.com/ansible/latest/intro_installation.html#latest-releases-via-pip
 [Ansible | tips n tricks]: https://ansible-tips-and-tricks.readthedocs.io/en/latest/os-dependent-tasks/variables/
-[**BUG** filetree]: #filetree-bug
 [Homebrew]: https://brew.sh/
 [Oh my zsh]: https://github.com/robbyrussell/oh-my-zsh
 [Powerline fonts]: https://github.com/powerline/fonts
-[setup playbook]: ./setup-dotfiles.yml
+[setup playbook]: ./ansible/setup-dotfiles.yml
 [Spaceship prompt]: https://github.com/denysdovhan/spaceship-prompt
-[version 2.4]: https://docs.ansible.com/ansible/devel/plugins/lookup/filetree.html
+[filetree]: https://docs.ansible.com/ansible/devel/plugins/lookup/filetree.html
 [zsh.png]: docs/zsh.png

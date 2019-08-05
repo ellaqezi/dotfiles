@@ -1,15 +1,19 @@
 # dotfiles
-Setup via ansible `2.5.0`  🤖
+Setup via ansible `2.8.3`  🤖
 
 ![zsh][zsh.png]
 
-## Install
-1. Clone the repo into `$USER_HOME/.dotfiles`
+## Installation
+1. Clone this repo and run `make all` from inside the `dotfiles` directory
 	```
-	  git clone git@github.com:ellaqezi/dotfiles.git ~/.dotfiles
+    git clone git@github.com:ellaqezi/dotfiles.git
+    make -C dotfiles all
 	```
-	
-1. Edit the `home/.gitconfig` file and use your own `user.name` and `user.email`
+ 
+    > The Makefile instructs you on what it requires e.g. `NAME`, `EMAIL`, `Password` (refers to your SUDO password)
+
+### Step-by-step 	
+1. Edit the `templates/.gitconfig` file with your own `user.name` and `user.email`, and move it to `home/.gitconfig`
 
     ```
     [user]

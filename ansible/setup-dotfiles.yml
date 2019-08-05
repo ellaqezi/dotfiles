@@ -7,7 +7,6 @@
       - bash-completion
       - docker
       - git
-      - maven
       - python
       - tree
       - watch
@@ -41,11 +40,5 @@
     when: tasks_exist
   - name: Install with {{ ansible_pkg_mgr }}
     action: >
-      {{ ansible_pkg_mgr }} name="{{ item }}" state=latest
-    with_items: "{{ utils }}"
+      {{ ansible_pkg_mgr }} name="{{ utils }}" state=latest
     become: "{{ false if ansible_pkg_mgr == 'homebrew' else true }}"
-  - name: Install docker-machine
-    command: '{{ dotfiles_dir }}/docker/machine.sh'
-    become: true
-    register: command_output
-    changed_when: "'installed' not in command_output.stdout"

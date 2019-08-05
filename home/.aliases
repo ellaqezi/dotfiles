@@ -1,8 +1,19 @@
+# aws
+alias awsp='p() { export AWS_DEFAULT_PROFILE=$1 && export AWS_PROFILE=$AWS_DEFAULT_PROFILE ;}; p'
+alias awsr='r() { export AWS_DEFAULT_REGION=$1 && export AWS_REGION=$AWS_DEFAULT_REGION ;}; r'
+alias awsak='k() { export AWS_ACCESS_KEY-ID=$1 && export AWS_SECRET_ACCESS_KEY=$2 ;}; k'
+alias ecrlogin='l() { $(aws ecr get-login --no-include-email --region $AWS_DEFAULT_REGION) ;}; l'
+
+# brew
+alias tf="brew switch terraform"
+
 # docker
 alias dbash='dbash() { docker exec -it $1 /bin/bash ;}; dbash'
 
 # git
-alias gitrif="git rebase --interactive $(git log --follow --find-renames=40% --diff-filter=A --format=%H -- $FILE)~"
+alias noedit="git commit --amend --no-edit"
+alias gitco='c() { git checkout -b $1 || git checkout $1 ;}; c'
+alias gitrif='rif() { git rebase --interactive $(git log --follow --find-renames=40% --diff-filter=A --format=%H -- ${1:-x})~ ;}; rif'
 alias gitlc="git ls-files | xargs wc -l"
 # git file transfer ;-)
 alias gitarc="git archive HEAD | bzip2 | uuencode /dev/stdout"
@@ -16,3 +27,4 @@ alias k9="kill -9"
 alias pag="ps aux | grep"
 
 alias serve="python -m SimpleHTTPServer"
+alias genpw='genpw() {  LC_ALL=C tr -dc "A-Za-z0-9!#$%&)(*+,-./:;<=>?@[\]^_\`{|}~" < /dev/urandom | head -c ${1:-12} | pbcopy ;}; genpw'

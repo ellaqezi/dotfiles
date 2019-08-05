@@ -3,5 +3,6 @@
 !.idea/settings.jar
 .bash_history
 .bash_logout
+.gitignore
 *.retry
 powerline

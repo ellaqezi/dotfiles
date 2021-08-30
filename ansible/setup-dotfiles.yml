@@ -8,6 +8,7 @@
       - docker
       - git
       - python
+      - pyenv
       - tree
       - watch
       - wget
@@ -16,14 +17,14 @@
   tasks:
   - name: Create ansible directory
     file: path={{ modules_dir }} state=directory
-    become: true
+    #become: true
   - name: Symlink ansible hosts
     file:
       src: '{{ playbook_dir }}/hosts'
       dest: '/etc/ansible/hosts' 
       state: link
       force: yes
-    become: true
+    #become: true
   - include_tasks: "tasks/os-specific.yml"
   - include_vars: "{{ os_vars }}"
     when: vars_exist

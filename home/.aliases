@@ -5,10 +5,11 @@ alias awsak='k() { export AWS_ACCESS_KEY-ID=$1 && export AWS_SECRET_ACCESS_KEY=$
 alias ecrlogin='l() { $(aws ecr get-login --no-include-email --region $AWS_DEFAULT_REGION) ;}; l'
 
 # brew
-alias tf="brew switch terraform"
+alias tf="tfswitch"
 
 # docker
 alias dbash='dbash() { docker exec -it $1 /bin/bash ;}; dbash'
+alias hanryu='hanryu() { export TAG=`date +"%Y%m%d%H%M"`; cd ~/projects/hanryu-tracker && docker build --no-cache -t hanryu/tracker:$TAG . && export PW=$1 ; rm -r $(pwd)/data/{databases,dbms,transactions};  docker run -p7474:7474 -p7687:7687 -v $(pwd)/import:/import -v $(pwd)/data:/data -e NEO4J_AUTH=neo4j/$PW --user=$(id -u):$(id -g) hanryu/tracker:$TAG ;}; hanryu'
 
 # git
 alias noedit="git commit --amend --no-edit"
@@ -28,3 +29,7 @@ alias pag="ps aux | grep"
 
 alias serve="python -m SimpleHTTPServer"
 alias genpw='genpw() {  LC_ALL=C tr -dc "A-Za-z0-9!#$%&)(*+,-./:;<=>?@[\]^_\`{|}~" < /dev/urandom | head -c ${1:-12} | pbcopy ;}; genpw'
+
+# qr
+alias qr_wa='qr_wa() { qr "https://wa.me/${1:?<mobile no.> [text]}?$(THIS=${    2:-💮} python3 ~/scripts/url_encode.py)" > wa-$1-${2:-💮}.png ;}; qr_wa'
+alias qr_wifi='qr_wifi() { qr "WIFI:S:${1:?set SSID};T:${2-nopass};P:${3-$2};H:${4=true};;" > $1.png ;}; qr_wifi'

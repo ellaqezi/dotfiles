@@ -1,19 +1,20 @@
-- name: Add repos
-  apt_repository: 
-    repo: "{{ item }}" 
-    state: present
-  with_items: "{{ apt_repos }}"
-- name: Add keys
-  apt_key:
-    url: "{{ item }}"
-    state: present
-  with_items: "{{ apt_keys }}"
-  become: true
 - name: Ensure apt is updated
   apt:
     state: latest
     update_cache: yes
     cache_valid_time: 3600
   become: true
-- name: Set default shell to zsh
-  command: "chsh -s $(which zsh)"
+- name: Update repositories cache and install packages
+  ansible.builtin.apt:
+    name: "{{ item }}"
+    update_cache: yes
+  with_items: "{{ packages }}"
+  become: true
+- name: Check that zsh is installed
+  ansible.builtin.command: which zsh
+  register: zsh
+- name: Set default shell to {{ zsh['stdout_lines'] }}
+  ansible.builtin.user:
+    name: "{{ ansible_facts['user_id'] }}"
+    shell: "{{ zsh['stdout_lines'] }}"
+  become: true

@@ -7,7 +7,8 @@ Setup via ansible 🤖 Requires `2.5.0+`
 1. Clone this repo and run `make all` from inside the `dotfiles` directory
 	```
     git clone git@github.com:ellaqezi/dotfiles.git
-    make -C dotfiles all
+    # remember to set NAME and EMAIL below
+    make -C dotfiles all [NAME=<github-user> EMAIL=<github-email>]
 	```
  
     > The Makefile instructs you on what it requires e.g. `NAME`, `EMAIL`, `Password` (refers to your SUDO password)

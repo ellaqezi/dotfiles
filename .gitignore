@@ -6,3 +6,4 @@
 .gitignore
 *.retry
 powerline
+home/.gitconfig

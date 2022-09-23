@@ -10,7 +10,7 @@ gitconfig: validate
 	@cat templates/gitconfig | sed -e 's/NAME/"$(NAME)"/g' -e 's/EMAIL/"$(EMAIL)"/g' > home/.gitconfig
 
 install-tools:
-	@sudo easy_install pip
+	@sudo easy_install pip || sudo apt install pip
 	@sudo pip install ansible
 
 all: gitconfig install-tools

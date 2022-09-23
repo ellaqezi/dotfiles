@@ -7,7 +7,7 @@
     state: latest
     update_homebrew: yes
 - name: Install with homebrew cask
-  homebrew_cask:
-    name: "{{ item }}"
+  homebrew:
+    name: "{{ brew_casks }}"
     state: present
-  with_items: "{{ brew_casks }}"
+  ignore_errors: yes

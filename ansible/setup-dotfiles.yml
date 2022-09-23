@@ -7,23 +7,19 @@
       - bash-completion
       - docker
       - git
-      - python
       - tree
       - watch
       - wget
       - zsh
-      - zsh-completions
   tasks:
   - name: Create ansible directory
     file: path={{ modules_dir }} state=directory
-    become: true
   - name: Symlink ansible hosts
     file:
       src: '{{ playbook_dir }}/hosts'
       dest: '/etc/ansible/hosts' 
       state: link
       force: yes
-    become: true
   - include_tasks: "tasks/os-specific.yml"
   - include_vars: "{{ os_vars }}"
     when: vars_exist

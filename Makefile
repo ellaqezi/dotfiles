@@ -1,6 +1,6 @@
 # dotfiles Makefile
 .ONESHELL:
-SHELL:=/bin/bash
+SHELL:=/bin/zsh
 
 validate:
 	@[[ -z $$NAME ]]  && echo 'export  NAME=<user>' &&  exit 1 || echo   NAME=$(NAME)
@@ -10,8 +10,9 @@ gitconfig: validate
 	@cat templates/gitconfig | sed -e 's/NAME/"$(NAME)"/g' -e 's/EMAIL/"$(EMAIL)"/g' > home/.gitconfig
 
 install-tools:
-	@sudo easy_install pip || sudo apt install pip
-	@sudo pip install ansible
+	@sudo python3 -m ensurepip || sudo apt install pip
+	@echo "export PATH=\"`python3 -m site --user-base`/bin:\$PATH\"" >> ~/.zshrc
+	@pip install ansible
 
 all: gitconfig install-tools
 	@ansible-playbook -i ansible/hosts ansible/setup-dotfiles.yml --ask-become-pass

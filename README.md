@@ -1,5 +1,5 @@
 # dotfiles
-Setup via ansible 🤖 Requires `2.5.0+`
+Setup via ansible 🤖 Requires `2.15.5+` and tested on macOS `Ventura 13.6`
 
 ![zsh][zsh.png]
 

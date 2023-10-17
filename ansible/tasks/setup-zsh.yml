@@ -39,7 +39,18 @@
   command: '{{ powerline_dir }}/powerline/install.sh'
   when: powerline.stat.exists == False and clone_powerline is defined and clone_powerline is succeeded
 - set_fact:
+    autosuggestions_dir: '{{ home_dir }}/.oh-my-zsh/custom/plugins/zsh-autosuggestions'
     spaceship_dir: '{{ home_dir }}/.oh-my-zsh/custom/themes/spaceship-prompt'
+- name: Stat zsh-autosuggestions
+  stat:
+    path: '{{ autosuggestions_dir }}'
+  register: autosuggestions
+- name: Clone zsh-autosuggestions
+  git:
+    repo=https://github.com/zsh-users/zsh-autosuggestions
+    dest='{{ autosuggestions_dir }}'
+  register: clone_autosuggestions
+  when: autosuggestions.stat.exists == False
 - name: Stat spaceship theme
   stat:
     path: '{{ spaceship_dir }}'
@@ -56,17 +67,3 @@
     dest='{{ home_dir }}/.oh-my-zsh/custom/themes/spaceship.zsh-theme'
     state=link
   when: clone_spaceship is defined and clone_spaceship is succeeded
-- name: Ensure theme contains ansible section
-  lineinfile:
-    path: '{{ spaceship_dir }}/spaceship.zsh'
-    line: '    ansible       # Ansible section'
-    state: present
-  check_mode: yes
-  register: has_ansible
-- name: Add ansible section to theme
-  lineinfile:
-    path: '{{ spaceship_dir }}/spaceship.zsh'
-    regexp: '^\sdocker'
-    insertafter: '^.*docker'
-    line: '    ansible       # Ansible section'
-  when: has_ansible.changed == True

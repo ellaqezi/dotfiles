@@ -2,7 +2,7 @@
   vars:
     home_dir: "{{ ansible_env.HOME }}" 
     dotfiles_dir: "{{ playbook_dir }}/.."
-    modules_dir: '/etc/ansible/modules'
+    modules_dir: '{{ ansible_env.HOME }}/plugins/modules'
     common:
       - bash-completion
       - docker
@@ -17,7 +17,7 @@
   - name: Symlink ansible hosts
     file:
       src: '{{ playbook_dir }}/hosts'
-      dest: '/etc/ansible/hosts' 
+      dest: '{{ home_dir }}/hosts'
       state: link
       force: yes
   - include_tasks: "tasks/os-specific.yml"
@@ -36,5 +36,6 @@
     when: tasks_exist
   - name: Install with {{ ansible_pkg_mgr }}
     action: >
-      {{ ansible_pkg_mgr }} name="{{ utils }}" state=latest
+      {{ ansible_pkg_mgr }} name="{{ item }}" state=latest
+    with_items: "{{ utils }}"
     become: "{{ false if ansible_pkg_mgr == 'homebrew' else true }}"

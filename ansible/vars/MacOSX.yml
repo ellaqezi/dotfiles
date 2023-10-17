@@ -1,6 +1,7 @@
 extra_utils:
   - zsh-autosuggestions
-utils: "{{ common }} + {{ extra_utils }}"
+  - spaceship
+utils: "{{ common + extra_utils }}"
 brew_casks:
   - flux
 #  - gimp

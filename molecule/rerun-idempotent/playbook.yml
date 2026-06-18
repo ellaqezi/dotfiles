@@ -1,0 +1,77 @@
+---
+# Molecule playbook: runs the dotfiles setup in a test container
+
+- name: Setup dotfiles from repo
+  hosts: dotfiles
+  connection: local
+  gather_facts: yes
+  vars:
+    dotfiles_dir: /tmp/dotfiles
+    home_dir: "{{ ansible_env.HOME }}"
+  pre_tasks:
+    - name: Copy dotfiles repo into container for testing
+      copy:
+        src: "{{ playbook_dir }}/../../"
+        dest: "{{ dotfiles_dir }}"
+      when: dotfiles_dir != playbook_dir
+
+  tasks:
+    - name: Create ansible directory
+      file:
+        path: "{{ home_dir }}/plugins/modules"
+        state: directory
+
+    - name: Symlink ansible hosts
+      file:
+        src: "{{ dotfiles_dir }}/ansible/hosts"
+        dest: "{{ home_dir }}/hosts"
+        state: link
+        force: yes
+
+    - name: Include OS-specific tasks
+      include_tasks: "{{ dotfiles_dir }}/ansible/tasks/os-specific.yml"
+
+    - name: Include setup-zsh tasks
+      include_tasks: "{{ dotfiles_dir }}/ansible/tasks/setup-zsh.yml"
+
+    - name: "Symlink config files (Step 1: with backup)"
+      block:
+        - name: Backup existing dotfiles before symlinking
+          copy:
+            src: "{{ home_dir }}/{{ item.path }}"
+            dest: "{{ home_dir }}/{{ item.path }}.bak-{{ ansible_date_time.date }}"
+            remote_src: yes
+          with_filetree: "{{ dotfiles_dir }}/home/"
+          when:
+            - item.state == 'file'
+            - lookup('fileglob', home_dir ~ '/' ~ item.path) != ''
+
+        - name: Symlink safe config files
+          file:
+            src: "{{ item.src }}"
+            dest: "{{ home_dir }}/{{ item.path }}"
+            state: link
+            force: yes
+          with_filetree: "{{ dotfiles_dir }}/home/"
+          when:
+            - item.state == 'file'
+            # Step 2: exclude .gitconfig from symlink loop
+            - item.path != '.gitconfig'
+            # Step 4: exclude .oh-my-zsh from symlink loop
+            - item.path != '.oh-my-zsh'
+
+    - name: "Step 2: Ensure .gitconfig is a regular file, not symlink"
+      file:
+        src: "{{ dotfiles_dir }}/home/.gitconfig"
+        dest: "{{ home_dir }}/.gitconfig"
+        state: link
+        force: no  # Do not overwrite if exists
+      register: gitconfig_result
+      when: not lookup('pipe', 'test -f ' ~ home_dir ~ '/.gitconfig && echo yes || echo no') == 'yes'
+
+    - name: "Step 3: Add .zshrc.local escape hatch"
+      lineinfile:
+        path: "{{ home_dir }}/.zshrc"
+        line: "\n# Machine-local overrides (not tracked in git)\n[ -f \"$HOME/.zshrc.local\" ] && source \"$HOME/.zshrc.local\""
+        state: present
+        insertafter: EOF

@@ -3,6 +3,31 @@ Setup via ansible 🤖 Requires `2.15.5+` and tested on macOS `Ventura 13.6`
 
 ![zsh][zsh.png]
 
+## ⚠️ Critical Issues (Refactoring in Progress)
+
+This playbook has known safety issues:
+
+- `.gitconfig` is **symlinked** — replaces existing git config with no backup on work machines
+- `.zshrc` is **symlinked** with no escape hatch — local customisations are awkward
+- `.oh-my-zsh` is **symlinked** — updates modify the repository, not a local install
+- No **backup** of existing dotfiles before overwriting
+
+**Status**: Refactoring is underway following a TDD strategy. See [tests/README.md](tests/README.md) for the test-driven redesign plan.
+
+**For now**: Test this carefully in a VM or isolated user account before running on your main machine.
+
+## Testing the Refactoring
+
+To run the test suite during refactoring:
+
+```bash
+# Layer 2: Molecule tests (requires Docker)
+pip install molecule ansible-core molecule-docker
+molecule test
+```
+
+For details, see [tests/README.md](tests/README.md).
+
 ## Installation
 1. Clone this repo and run `make all` from inside the `dotfiles` directory
 	```

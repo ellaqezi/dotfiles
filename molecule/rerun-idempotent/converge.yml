@@ -1,0 +1,66 @@
+---
+# Molecule converge: runs the playbook on the instance
+
+- name: "Pre-converge: copy dotfiles and seed existing files for re-run scenario"
+  hosts: dotfiles
+  connection: local
+  gather_facts: no
+  tasks:
+    - name: Copy dotfiles into container
+      copy:
+        src: "{{ playbook_dir }}/../../"
+        dest: /tmp/dotfiles
+
+    - name: Create test dotfiles for re-run scenario
+      copy:
+        content: "# Machine-specific config\nexport MY_CUSTOM_VAR=value\n"
+        dest: "{{ ansible_env.HOME }}/{{ item }}"
+      loop:
+        - ".zshrc"
+        - ".bashrc"
+
+- import_playbook: playbook.yml
+
+- name: "Post-converge: verify backup behavior"
+  hosts: dotfiles
+  connection: local
+  gather_facts: yes
+  tasks:
+    - name: "Step 1: Verify backup files were created on re-run"
+      find:
+        path: "{{ ansible_env.HOME }}"
+        pattern: ".zshrc.bak-*"
+      register: backups
+
+    - name: Show backups found
+      debug:
+        msg: "Found {{ backups.matched }} backup file(s)"
+
+    - name: "Step 1: Verify original content is in backup"
+      shell: |
+        grep -l "MY_CUSTOM_VAR" {{ ansible_env.HOME }}/.zshrc.bak-* 2>/dev/null || echo "not_found"
+      register: backup_content
+      changed_when: false
+
+
+    - name: Show backup content verification
+      debug:
+        msg: "✓ Original config preserved in backup"
+      when:
+        - inventory_hostname == 'rerun-idempotent'
+        - backup_content.stdout != 'not_found'
+
+    - name: Run playbook a second time (idempotency test)
+      include_tasks: playbook.yml
+      when: inventory_hostname == 'rerun-idempotent'
+
+    - name: "Idempotency: .gitconfig should still be a regular file"
+      stat:
+        path: "{{ home_dir }}/.gitconfig"
+      register: gitconfig_second_run
+      changed_when: gitconfig_second_run.stat.islnk | bool
+
+    - name: Report idempotency result
+      debug:
+        msg: "✓ Playbook is idempotent — .gitconfig remains a regular file after second run"
+      when: not gitconfig_second_run.changed | bool

@@ -6,7 +6,7 @@
   connection: local
   gather_facts: yes
   vars:
-    home_dir: "{{ ansible_env.HOME }}"
+    home_dir: "{{ ansible_facts['env'].HOME }}"
   tasks:
     - name: "Step 2: .gitconfig must be a regular file (not symlink)"
       stat:

@@ -12,6 +12,12 @@ alias dbash='dbash() { docker exec -it $1 /bin/bash ;}; dbash'
 alias hanryu='hanryu() { export TAG=`date +"%Y%m%d%H%M"`; cd ~/projects/hanryu-tracker && docker build --no-cache -t hanryu/tracker:$TAG . && export PW=$1 ; rm -r $(pwd)/data/{databases,dbms,transactions};  docker run -p7474:7474 -p7687:7687 -v $(pwd)/import:/import -v $(pwd)/data:/data -e NEO4J_AUTH=neo4j/$PW --user=$(id -u):$(id -g) hanryu/tracker:$TAG ;}; hanryu'
 
 # git
+# Suppress "fatal: not a git repository" when running git commands outside a repo.
+# All other git errors (auth failures, network errors, etc.) are preserved.
+git() {
+  command git "$@" 2> >(grep -v '^fatal: not a git repository' >&2)
+}
+
 alias noedit="git commit --amend --no-edit"
 alias gitco='c() { git checkout -b $1 || git checkout $1 ;}; c'
 alias gitrif='rif() { git rebase --interactive $(git log --follow --find-renames=40% --diff-filter=A --format=%H -- ${1:-x})~ ;}; rif'

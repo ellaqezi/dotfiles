@@ -7,8 +7,8 @@
   gather_facts: yes
   vars:
     dotfiles_dir: /tmp/dotfiles
-    home_dir: "{{ ansible_env.HOME }}"
-    font_dir: "{{ ansible_env.HOME }}/.local/share/fonts"
+    home_dir: "{{ ansible_facts['env'].HOME }}"
+    font_dir: "{{ ansible_facts['env'].HOME }}/.local/share/fonts"
   tasks:
     - name: Create ansible directory
       file:
@@ -47,7 +47,7 @@
         - name: Backup existing dotfiles before symlinking
           copy:
             src: "{{ home_dir }}/{{ item.item.path | relpath(dotfiles_dir + '/home/') }}"
-            dest: "{{ home_dir }}/{{ item.item.path | relpath(dotfiles_dir + '/home/') }}.bak-{{ ansible_date_time.date }}"
+            dest: "{{ home_dir }}/{{ item.item.path | relpath(dotfiles_dir + '/home/') }}.bak-{{ ansible_facts['date_time'].date }}"
             remote_src: yes
           loop: "{{ target_stat_results.results }}"
           when:

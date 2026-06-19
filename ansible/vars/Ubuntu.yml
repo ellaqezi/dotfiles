@@ -2,4 +2,4 @@ utils: "{{ common }}"
 packages:
   - zsh
   - zsh-autosuggestions
-font_dir: "{{ ansible_env.HOME }}/.local/share/fonts"
+font_dir: "{{ ansible_facts['env'].HOME }}/.local/share/fonts"

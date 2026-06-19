@@ -7,7 +7,7 @@
   gather_facts: yes
   vars:
     dotfiles_dir: /tmp/dotfiles
-    home_dir: "{{ ansible_env.HOME }}"
+    home_dir: "{{ ansible_facts['env'].HOME }}"
   tasks:
     - name: Create ansible directory
       file:
@@ -32,7 +32,7 @@
         - name: Backup existing dotfiles before symlinking
           copy:
             src: "{{ home_dir }}/{{ item.path }}"
-            dest: "{{ home_dir }}/{{ item.path }}.bak-{{ ansible_date_time.date }}"
+            dest: "{{ home_dir }}/{{ item.path }}.bak-{{ ansible_facts['date_time'].date }}"
             remote_src: yes
           with_filetree: "{{ dotfiles_dir }}/home/"
           when:

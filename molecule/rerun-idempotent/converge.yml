@@ -10,7 +10,7 @@
   tasks:
     - name: "Step 1: Verify backup files were created on re-run"
       find:
-        path: "{{ ansible_env.HOME }}"
+        path: "{{ ansible_facts['env'].HOME }}"
         pattern: ".zshrc.bak-*"
       register: backups
 
@@ -20,7 +20,7 @@
 
     - name: "Step 1: Verify original content is in backup"
       shell: |
-        grep -l "MY_CUSTOM_VAR" {{ ansible_env.HOME }}/.zshrc.bak-* 2>/dev/null || echo "not_found"
+           grep -l "MY_CUSTOM_VAR" {{ ansible_facts['env'].HOME }}/.zshrc.bak-* 2>/dev/null || echo "not_found"
       register: backup_content
       changed_when: false
 

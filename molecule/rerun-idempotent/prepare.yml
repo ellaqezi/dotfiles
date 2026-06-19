@@ -25,7 +25,7 @@
     - name: Create test dotfiles for re-run scenario
       copy:
         content: "# Machine-specific config\nexport MY_CUSTOM_VAR=value\n"
-        dest: "{{ ansible_env.HOME }}/{{ item }}"
+        dest: "{{ ansible_facts['env'].HOME }}/{{ item }}"
       loop:
         - ".zshrc"
         - ".bashrc"

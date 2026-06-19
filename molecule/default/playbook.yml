@@ -1,0 +1,86 @@
+---
+# Molecule playbook: runs the dotfiles setup in a test container
+
+- name: Setup dotfiles from repo
+  hosts: dotfiles
+  connection: local
+  gather_facts: yes
+  vars:
+    dotfiles_dir: /tmp/dotfiles
+    home_dir: "{{ ansible_env.HOME }}"
+    font_dir: "{{ ansible_env.HOME }}/.local/share/fonts"
+  tasks:
+    - name: Create ansible directory
+      file:
+        path: "{{ home_dir }}/plugins/modules"
+        state: directory
+
+    - name: Symlink ansible hosts
+      file:
+        src: "{{ dotfiles_dir }}/ansible/hosts"
+        dest: "{{ home_dir }}/hosts"
+        state: link
+        force: yes
+
+    - name: Include OS-specific tasks
+      include_tasks: "{{ playbook_dir }}/../../ansible/tasks/os-specific.yml"
+
+    - name: Include setup-zsh tasks
+      include_tasks: "{{ playbook_dir }}/../../ansible/tasks/setup-zsh.yml"
+
+    - name: "Symlink config files (Step 1: with backup)"
+      block:
+        - name: Find files in dotfiles home/ directory
+          find:
+            paths: "{{ dotfiles_dir }}/home/"
+            recurse: yes
+            file_type: file
+            hidden: yes
+          register: dotfiles_home_files
+
+        - name: Stat dotfiles target paths before backup
+          stat:
+            path: "{{ home_dir }}/{{ item.path | relpath(dotfiles_dir + '/home/') }}"
+          loop: "{{ dotfiles_home_files.files }}"
+          register: target_stat_results
+
+        - name: Backup existing dotfiles before symlinking
+          copy:
+            src: "{{ home_dir }}/{{ item.item.path | relpath(dotfiles_dir + '/home/') }}"
+            dest: "{{ home_dir }}/{{ item.item.path | relpath(dotfiles_dir + '/home/') }}.bak-{{ ansible_date_time.date }}"
+            remote_src: yes
+          loop: "{{ target_stat_results.results }}"
+          when:
+            # Only backup if the file exists AND is NOT already a symlink (idempotent)
+            - item.stat.exists
+            - not item.stat.islnk
+
+        - name: Symlink safe config files
+          file:
+            src: "{{ item.path }}"
+            dest: "{{ home_dir }}/{{ item.path | relpath(dotfiles_dir + '/home/') }}"
+            state: link
+            force: yes
+          loop: "{{ dotfiles_home_files.files }}"
+          when:
+            # Step 2: exclude .gitconfig from symlink loop
+            - (item.path | relpath(dotfiles_dir + '/home/')) != '.gitconfig'
+            # Step 4: exclude .oh-my-zsh from symlink loop
+            - (item.path | relpath(dotfiles_dir + '/home/')) != '.oh-my-zsh'
+
+    - name: "Step 2: Ensure .gitconfig exists as a regular file (not symlink)"
+      copy:
+        dest: "{{ home_dir }}/.gitconfig"
+        content: |
+          [user]
+              name = Test User
+              email = test@example.com
+        force: no  # Do not overwrite if already present
+
+    - name: "Step 3: Add .zshrc.local escape hatch"
+      lineinfile:
+        path: "{{ home_dir }}/.zshrc"
+        line: "[ -f \"$HOME/.zshrc.local\" ] && source \"$HOME/.zshrc.local\""
+        state: present
+        insertafter: EOF
+        create: yes

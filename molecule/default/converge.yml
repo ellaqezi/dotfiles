@@ -1,0 +1,4 @@
+---
+# Molecule converge: runs the dotfiles playbook (copy handled in prepare.yml)
+
+- import_playbook: playbook.yml

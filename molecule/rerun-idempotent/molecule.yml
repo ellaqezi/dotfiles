@@ -1,0 +1,22 @@
+---
+dependency:
+  name: galaxy
+  options:
+    ignore-errors: true
+    ignore-certs: true
+
+driver:
+  name: docker
+
+platforms:
+  - name: dotfiles
+    image: geerlingguy/docker-ubuntu2204-ansible
+    pre_build_image: true
+
+provisioner:
+  name: ansible
+  playbooks:
+    prepare: prepare.yml
+
+verifier:
+  name: ansible

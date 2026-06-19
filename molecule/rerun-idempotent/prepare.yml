@@ -1,0 +1,31 @@
+---
+- name: "Prepare: install system dependencies"
+  hosts: dotfiles
+  gather_facts: no
+  tasks:
+    - name: Install git and make
+      apt:
+        name:
+          - git
+          - make
+        state: present
+        update_cache: yes
+      become: yes
+
+- name: "Prepare: copy dotfiles and seed existing files for re-run scenario"
+  hosts: dotfiles
+  connection: local
+  gather_facts: no
+  tasks:
+    - name: Copy dotfiles repo into container
+      copy:
+        src: "{{ playbook_dir }}/../../"
+        dest: /tmp/dotfiles
+
+    - name: Create test dotfiles for re-run scenario
+      copy:
+        content: "# Machine-specific config\nexport MY_CUSTOM_VAR=value\n"
+        dest: "{{ ansible_env.HOME }}/{{ item }}"
+      loop:
+        - ".zshrc"
+        - ".bashrc"

@@ -1,0 +1,83 @@
+---
+# Molecule verify: assertions that check refactoring steps
+
+- name: Verify dotfiles refactoring steps
+  hosts: dotfiles
+  connection: local
+  gather_facts: yes
+  vars:
+    home_dir: "{{ ansible_env.HOME }}"
+  tasks:
+    - name: "Step 2: .gitconfig must be a regular file (not symlink)"
+      stat:
+        path: "{{ home_dir }}/.gitconfig"
+      register: gitconfig_stat
+      failed_when:
+        - gitconfig_stat.stat.islnk | bool
+      changed_when: false
+
+    - name: Verify .gitconfig result
+      debug:
+        msg: "✓ Step 2: .gitconfig is a regular file"
+      when: not gitconfig_stat.stat.islnk | bool
+
+    - name: "Step 3: .zshrc must source .zshrc.local"
+      lineinfile:
+        path: "{{ home_dir }}/.zshrc"
+        line: "[ -f \"$HOME/.zshrc.local\" ] && source \"$HOME/.zshrc.local\""
+        state: present
+      check_mode: yes
+      register: zshrc_local
+      failed_when:
+        - zshrc_local.changed | bool
+      changed_when: false
+
+    - name: Verify .zshrc.local sourcing
+      debug:
+        msg: "✓ Step 3: .zshrc sources .zshrc.local escape hatch"
+      when: not zshrc_local.changed | bool
+
+    - name: "Step 4: .oh-my-zsh must be a directory (not symlink)"
+      stat:
+        path: "{{ home_dir }}/.oh-my-zsh"
+      register: omz_stat
+      failed_when:
+        - omz_stat.stat.islnk | bool
+        - not omz_stat.stat.isdir | bool
+      changed_when: false
+
+    - name: Verify .oh-my-zsh directory
+      debug:
+        msg: "✓ Step 4: .oh-my-zsh is a real directory"
+      when:
+        - not omz_stat.stat.islnk | bool
+        - omz_stat.stat.isdir | bool
+
+    - name: "Step 7: .gitignore must contain home/.gitconfig"
+      lineinfile:
+        path: /tmp/dotfiles/.gitignore
+        line: "home/.gitconfig"
+        state: present
+      check_mode: yes
+      register: gitignore_check
+      failed_when:
+        - gitignore_check.changed | bool
+      changed_when: false
+
+    - name: Verify .gitignore
+      debug:
+        msg: "✓ Step 7: home/.gitconfig is in .gitignore"
+      when: not gitignore_check.changed | bool
+
+    - name: "Summary: Verify .aliases is a symlink (safe to symlink)"
+      stat:
+        path: "{{ home_dir }}/.aliases"
+      register: aliases_stat
+      failed_when:
+        - not aliases_stat.stat.exists or not aliases_stat.stat.islnk
+      changed_when: false
+
+    - name: Show .aliases status
+      debug:
+        msg: "✓ .aliases is a symlink"
+      when: aliases_stat.stat.exists and aliases_stat.stat.islnk

@@ -1,0 +1,23 @@
+---
+- name: "Prepare: install system dependencies"
+  hosts: dotfiles
+  gather_facts: no
+  tasks:
+    - name: Install git and make
+      apt:
+        name:
+          - git
+          - make
+        state: present
+        update_cache: yes
+      become: yes
+
+- name: "Prepare: copy dotfiles repo into container"
+  hosts: dotfiles
+  connection: local
+  gather_facts: no
+  tasks:
+    - name: Copy dotfiles repo into container
+      copy:
+        src: "{{ playbook_dir }}/../../"
+        dest: /tmp/dotfiles

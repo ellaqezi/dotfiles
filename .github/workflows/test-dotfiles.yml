@@ -1,0 +1,48 @@
+---
+name: Test dotfiles
+
+on:
+  pull_request:
+    paths:
+      - 'tests/audit/dotfiles/**'
+  push:
+    branches:
+      - master
+      - refactor
+    paths:
+      - 'tests/audit/dotfiles/**'
+
+jobs:
+  layer-1-makefile:
+    name: "Layer 1 — Makefile safety"
+    runs-on: macos-latest
+    defaults:
+      run:
+        working-directory: tests/audit/dotfiles
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run Makefile tests
+        run: bash tests/test_makefile.sh
+
+  layer-2-molecule:
+    name: "Layer 2 — Molecule container"
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: tests/audit/dotfiles
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Install Molecule stack
+        run: pip install molecule==6.0.3 molecule-docker==2.0.0 ansible-core==2.21.0
+
+      - name: Install community.docker collection
+        run: ansible-galaxy collection install community.docker
+
+      - name: Run molecule (default scenario)
+        run: molecule test

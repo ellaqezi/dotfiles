@@ -1,23 +1,5 @@
 ---
-# Molecule converge: runs the playbook on the instance
-
-- name: "Pre-converge: copy dotfiles and seed existing files for re-run scenario"
-  hosts: dotfiles
-  connection: local
-  gather_facts: no
-  tasks:
-    - name: Copy dotfiles into container
-      copy:
-        src: "{{ playbook_dir }}/../../"
-        dest: /tmp/dotfiles
-
-    - name: Create test dotfiles for re-run scenario
-      copy:
-        content: "# Machine-specific config\nexport MY_CUSTOM_VAR=value\n"
-        dest: "{{ ansible_env.HOME }}/{{ item }}"
-      loop:
-        - ".zshrc"
-        - ".bashrc"
+# Molecule converge: runs the playbook on the instance (copy/seeding handled in prepare.yml)
 
 - import_playbook: playbook.yml
 

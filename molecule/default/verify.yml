@@ -73,8 +73,11 @@
       stat:
         path: "{{ home_dir }}/.aliases"
       register: aliases_stat
+      failed_when:
+        - not aliases_stat.stat.exists or not aliases_stat.stat.islnk
       changed_when: false
 
     - name: Show .aliases status
       debug:
-        msg: ".aliases is {% if aliases_stat.stat.islnk %}a symlink (✓){% else %}a regular file (verify symlink behavior){% endif %}"
+        msg: "✓ .aliases is a symlink"
+      when: aliases_stat.stat.exists and aliases_stat.stat.islnk

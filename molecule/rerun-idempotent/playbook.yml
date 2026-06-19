@@ -8,13 +8,6 @@
   vars:
     dotfiles_dir: /tmp/dotfiles
     home_dir: "{{ ansible_env.HOME }}"
-  pre_tasks:
-    - name: Copy dotfiles repo into container for testing
-      copy:
-        src: "{{ playbook_dir }}/../../"
-        dest: "{{ dotfiles_dir }}"
-      when: dotfiles_dir != playbook_dir
-
   tasks:
     - name: Create ansible directory
       file:

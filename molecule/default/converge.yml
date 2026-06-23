@@ -1,14 +1,6 @@
 ---
-# Molecule converge: copies repo into container then runs the dotfiles playbook
-
-- name: "Pre-converge: copy dotfiles repo into container"
-  hosts: dotfiles
-  connection: local
-  gather_facts: no
-  tasks:
-    - name: Copy dotfiles into container
-      copy:
-        src: "{{ playbook_dir }}/../../"
-        dest: /tmp/dotfiles
+# Molecule converge: runs the dotfiles playbook.
+# The dotfiles repo is copied into the container by prepare.yml;
+# removing that copy from here keeps the idempotency check clean.
 
 - import_playbook: playbook.yml

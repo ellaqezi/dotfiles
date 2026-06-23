@@ -15,7 +15,7 @@
 - name: "Prepare: copy dotfiles and seed existing files for re-run scenario"
   hosts: dotfiles
   connection: local
-  gather_facts: no
+  gather_facts: yes
   tasks:
     - name: Copy dotfiles repo into container
       copy:

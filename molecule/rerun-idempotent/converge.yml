@@ -1,17 +1,22 @@
 ---
-# Molecule converge: runs the playbook on the instance (copy/seeding handled in prepare.yml)
+# Molecule converge: runs the playbook twice to verify idempotency.
+# Backup seeding is handled in prepare.yml.
 
+# First run: applies the dotfiles setup; triggers backup of seeded .zshrc/.bashrc.
 - import_playbook: playbook.yml
 
-- name: "Post-converge: verify backup behavior"
+# Post-first-run: assert backups were created and contain the original content.
+- name: "Post-first-run: verify backup behaviour"
   hosts: dotfiles
   connection: local
   gather_facts: yes
+  vars:
+    home_dir: "{{ ansible_facts['env'].HOME }}"
   tasks:
-    - name: "Step 1: Verify backup files were created on re-run"
+    - name: "Step 1: Verify backup files were created on first run"
       find:
-        path: "{{ ansible_facts['env'].HOME }}"
-        pattern: ".zshrc.bak-*"
+        paths: "{{ home_dir }}"
+        patterns: ".zshrc.bak-*"
       register: backups
 
     - name: Show backups found
@@ -20,29 +25,34 @@
 
     - name: "Step 1: Verify original content is in backup"
       shell: |
-           grep -l "MY_CUSTOM_VAR" {{ ansible_facts['env'].HOME }}/.zshrc.bak-* 2>/dev/null || echo "not_found"
+        grep -l "MY_CUSTOM_VAR" {{ home_dir }}/.zshrc.bak-* 2>/dev/null || echo "not_found"
       register: backup_content
       changed_when: false
 
+    - name: Assert backup contains original content
+      assert:
+        that: backup_content.stdout != 'not_found'
+        fail_msg: "Original .zshrc content (MY_CUSTOM_VAR) was not found in any backup file"
+        success_msg: "✓ Original config preserved in backup"
 
-    - name: Show backup content verification
-      debug:
-        msg: "✓ Original config preserved in backup"
-      when:
-        - inventory_hostname == 'rerun-idempotent'
-        - backup_content.stdout != 'not_found'
+# Second run: idempotency check — re-running the playbook must not change state.
+- import_playbook: playbook.yml
 
-    - name: Run playbook a second time (idempotency test)
-      include_tasks: playbook.yml
-      when: inventory_hostname == 'rerun-idempotent'
-
+# Post-second-run: assert no destructive changes occurred on the second run.
+- name: "Post-second-run: idempotency assertions"
+  hosts: dotfiles
+  connection: local
+  gather_facts: yes
+  vars:
+    home_dir: "{{ ansible_facts['env'].HOME }}"
+  tasks:
     - name: "Idempotency: .gitconfig should still be a regular file"
       stat:
         path: "{{ home_dir }}/.gitconfig"
       register: gitconfig_second_run
-      changed_when: gitconfig_second_run.stat.islnk | bool
+      failed_when: gitconfig_second_run.stat.islnk | bool
+      changed_when: false
 
     - name: Report idempotency result
       debug:
         msg: "✓ Playbook is idempotent — .gitconfig remains a regular file after second run"
-      when: not gitconfig_second_run.changed | bool

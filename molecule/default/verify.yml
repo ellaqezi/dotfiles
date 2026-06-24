@@ -6,7 +6,7 @@
   connection: local
   gather_facts: yes
   vars:
-    home_dir: "{{ ansible_env.HOME }}"
+    home_dir: "{{ ansible_facts['env'].HOME }}"
   tasks:
     - name: "Step 2: .gitconfig must be a regular file (not symlink)"
       stat:
@@ -41,9 +41,7 @@
       stat:
         path: "{{ home_dir }}/.oh-my-zsh"
       register: omz_stat
-      failed_when:
-        - omz_stat.stat.islnk | bool
-        - not omz_stat.stat.isdir | bool
+      failed_when: omz_stat.stat.islnk | bool or not omz_stat.stat.isdir | bool
       changed_when: false
 
     - name: Verify .oh-my-zsh directory
@@ -81,3 +79,27 @@
       debug:
         msg: "✓ .aliases is a symlink"
       when: aliases_stat.stat.exists and aliases_stat.stat.islnk
+
+    - name: "git wrapper: 'fatal: not a git repository' must be suppressed outside a repo"
+      shell: >
+        zsh -c 'source {{ home_dir }}/.aliases && cd /tmp && git status 2>&1'
+      register: git_no_repo
+      changed_when: false
+      failed_when: "'fatal: not a git repository' in git_no_repo.stdout"
+
+    - name: Verify git wrapper suppresses fatal message
+      debug:
+        msg: "✓ git wrapper: 'fatal: not a git repository' is suppressed"
+      when: "'fatal: not a git repository' not in git_no_repo.stdout"
+
+    - name: "git wrapper: real git errors must still propagate"
+      shell: >
+        zsh -c 'source {{ home_dir }}/.aliases && cd /tmp && git __not_a_real_command__ 2>&1'
+      register: git_real_error
+      changed_when: false
+      failed_when: "'__not_a_real_command__' not in git_real_error.stdout"
+
+    - name: Verify git wrapper passes through real errors
+      debug:
+        msg: "✓ git wrapper: real git errors propagate normally"
+      when: "'__not_a_real_command__' in git_real_error.stdout"

@@ -1,6 +1,6 @@
 - set_fact:
-    os_vars: "vars/{{ ansible_distribution }}.yml"
-    os_tasks: "tasks/{{ ansible_distribution }}.yml"
+    os_vars: "vars/{{ ansible_facts['distribution'] }}.yml"
+    os_tasks: "tasks/{{ ansible_facts['distribution'] }}.yml"
 - name: Stat OS-specific vars and tasks
   stat:
     path: "{{ item }}"

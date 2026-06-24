@@ -34,5 +34,21 @@ jobs:
       - name: Install community.docker collection
         run: ansible-galaxy collection install community.docker
 
+      # default: fresh install against a clean container (no pre-existing dotfiles).
+      # Covers Steps 2-7 assertions and git-wrapper behaviour.
+      # Molecule's built-in idempotence step re-runs converge once to catch any
+      # task that reports 'changed' on a second consecutive run.
       - name: Run molecule (default scenario)
         run: molecule test
+
+      # rerun-idempotent: dirty-slate install — container is seeded with existing
+      # ~/.zshrc and ~/.bashrc containing MY_CUSTOM_VAR before the playbook runs.
+      # Exercises edge cases the default scenario cannot reach:
+      #   - backup fires on pre-existing files and preserves their content
+      #   - no re-backup on second run (files are symlinks after first run)
+      #   - .gitconfig remains a regular file after a second playbook run
+      # converge.yml runs playbook.yml twice with assertions between the runs;
+      # the built-in idempotence step is therefore disabled in molecule.yml to
+      # avoid a redundant 3rd/4th run that would cause spurious failures.
+      - name: Run molecule (rerun-idempotent scenario)
+        run: molecule test -s rerun-idempotent

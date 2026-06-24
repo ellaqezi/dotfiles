@@ -1,12 +1,13 @@
 - hosts: localhost 
   vars:
-    home_dir: "{{ ansible_env.HOME }}" 
+    home_dir: "{{ ansible_facts['env'].HOME }}"
     dotfiles_dir: "{{ playbook_dir }}/.."
-    modules_dir: '{{ ansible_env.HOME }}/plugins/modules'
+    modules_dir: '{{ ansible_facts["env"].HOME }}/plugins/modules'
     common:
       - bash-completion
-      - docker
+      # - docker
       - git
+      - molecule
       - tree
       - watch
       - wget
@@ -34,8 +35,8 @@
     when: item.state == 'file'
   - include_tasks: "{{ os_tasks }}"
     when: tasks_exist
-  - name: Install with {{ ansible_pkg_mgr }}
+  - name: Install with {{ ansible_facts['pkg_mgr'] }}
     action: >
-      {{ ansible_pkg_mgr }} name="{{ item }}" state=latest
+      {{ ansible_facts['pkg_mgr'] }} name="{{ item }}" state=latest
     with_items: "{{ utils }}"
-    become: "{{ false if ansible_pkg_mgr == 'homebrew' else true }}"
+    become: "{{ false if ansible_facts['pkg_mgr'] == 'homebrew' else true }}"

@@ -7,4 +7,4 @@ brew_casks:
 #  - gimp
 #  - intellij-idea
 #  - sublime-text
-font_dir: "{{ ansible_facts['env']['HOME'] }}/Library/Fonts"
+font_dir: "{{ ansible_facts['env'].HOME }}/Library/Fonts"

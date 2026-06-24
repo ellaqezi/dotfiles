@@ -3,11 +3,12 @@
   hosts: dotfiles
   gather_facts: no
   tasks:
-    - name: Install git and make
+    - name: Install system dependencies
       apt:
         name:
           - git
           - make
+          - zsh   # required by verify.yml git-wrapper tasks (zsh -c 'source .aliases ...')
         state: present
         update_cache: yes
       become: yes

@@ -36,3 +36,9 @@ jobs:
 
       - name: Run molecule (default scenario)
         run: molecule test
+
+      - name: Run molecule (rerun-idempotent scenario)
+        run: molecule test -s rerun-idempotent
+
+      - name: Run molecule (rerun-idempotent scenario)
+        run: molecule test -s rerun-idempotent

@@ -20,3 +20,35 @@ provisioner:
 
 verifier:
   name: ansible
+
+# converge.yml already runs playbook.yml twice (first run + embedded idempotency
+# check). Removing the built-in idempotence step avoids running it 4 times total
+# and prevents false failures from the post-first-run assertion plays.
+test_sequence:
+  - dependency
+  - cleanup
+  - destroy
+  - syntax
+  - create
+  - prepare
+  - converge
+  - side_effect
+  - verify
+  - cleanup
+  - destroy
+
+# converge.yml runs playbook.yml twice and has its own embedded idempotency
+# assertions. The built-in idempotence step would run converge a third time
+# (playbook.yml x4 total) and is redundant here.
+test_sequence:
+  - dependency
+  - cleanup
+  - destroy
+  - syntax
+  - create
+  - prepare
+  - converge
+  - side_effect
+  - verify
+  - cleanup
+  - destroy

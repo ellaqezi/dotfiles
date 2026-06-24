@@ -1,6 +1,6 @@
 ---
 # Molecule converge: runs the dotfiles playbook.
 # The dotfiles repo is copied into the container by prepare.yml;
-# removing that copy from here keeps the idempotency check clean.
+# keeping the copy out of converge keeps the idempotency check clean.
 
 - import_playbook: playbook.yml

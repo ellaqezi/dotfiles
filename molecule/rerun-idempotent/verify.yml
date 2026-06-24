@@ -41,9 +41,8 @@
       stat:
         path: "{{ home_dir }}/.oh-my-zsh"
       register: omz_stat
-      failed_when:
-        - omz_stat.stat.islnk | bool
-        - not omz_stat.stat.isdir | bool
+      # OR: fail if it IS a symlink, or if it is NOT a directory
+      failed_when: omz_stat.stat.islnk | bool or not omz_stat.stat.isdir | bool
       changed_when: false
 
     - name: Verify .oh-my-zsh directory
